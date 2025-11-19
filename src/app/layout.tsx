@@ -1,5 +1,8 @@
 import './globals.css';
 import Link from 'next/link';
+import { Outfit } from 'next/font/google';
+
+const outfit = Outfit({ subsets: ['latin'] });
 
 export const metadata = {
   title: 'Trending X News',
@@ -13,7 +16,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>
+      <body className={outfit.className}>
         <nav style={{
           borderBottom: '1px solid var(--card-border)',
           padding: '1rem 0',
