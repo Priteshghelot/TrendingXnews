@@ -33,7 +33,6 @@ export default function RootLayout({
             <div style={{ display: 'flex', gap: '2rem' }}>
               <Link href="/" className="nav-link">Home</Link>
               <Link href="/archive" className="nav-link">Archive</Link>
-              <Link href="/admin" className="nav-link" style={{ color: 'var(--primary)' }}>Admin</Link>
             </div>
           </div>
         </nav>
