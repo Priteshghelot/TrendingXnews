@@ -5,8 +5,8 @@ import { Outfit } from 'next/font/google';
 const outfit = Outfit({ subsets: ['latin'] });
 
 export const metadata = {
-  title: 'Trending X News',
-  description: 'The latest viral trends from X',
+  title: 'CricTrend - Live Scores & News',
+  description: 'The latest cricket news and live scores',
 };
 
 export default function RootLayout({
@@ -22,13 +22,14 @@ export default function RootLayout({
           padding: '1rem 0',
           position: 'sticky',
           top: 0,
-          background: 'rgba(10, 10, 10, 0.8)',
+          background: 'rgba(15, 23, 42, 0.8)',
           backdropFilter: 'blur(10px)',
           zIndex: 100
         }}>
           <div className="container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0 2rem' }}>
-            <Link href="/" style={{ fontSize: '1.5rem', fontWeight: 'bold', background: 'linear-gradient(to right, #3b82f6, #8b5cf6)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-              TrendingX
+            <Link href="/" style={{ fontSize: '1.5rem', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <span style={{ color: 'var(--primary)' }}>Cric</span>
+              <span style={{ color: 'white' }}>Trend</span>
             </Link>
             <div style={{ display: 'flex', gap: '2rem' }}>
               <Link href="/" className="nav-link">Home</Link>

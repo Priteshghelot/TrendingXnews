@@ -12,8 +12,25 @@ export interface Post {
     sourceUrl?: string;
 }
 
+export interface Score {
+    teamA: string;
+    teamB: string;
+    scoreA: string;
+    scoreB: string;
+    status: string; // e.g. "Live", "Innings Break", "Result"
+    matchTitle: string; // e.g. "IND vs AUS, 1st Test"
+}
+
 // In-memory fallback for Vercel/Serverless environments where FS is read-only
 let globalPosts: Post[] = [];
+let globalScore: Score = {
+    teamA: 'India',
+    teamB: 'Australia',
+    scoreA: '250/3',
+    scoreB: 'Yet to Bat',
+    status: 'Live - 1st Innings',
+    matchTitle: 'Border-Gavaskar Trophy, 1st Test'
+};
 let isFsAvailable = true;
 
 // Initialize by trying to read from file once
@@ -77,4 +94,12 @@ export function updatePostStatus(id: string, status: Post['status']) {
         post.status = status;
         savePosts(posts);
     }
+}
+
+export function getScore(): Score {
+    return globalScore;
+}
+
+export function updateScore(score: Score) {
+    globalScore = score;
 }

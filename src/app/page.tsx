@@ -15,21 +15,29 @@ export default function Home() {
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+  const [score, setScore] = useState<any>(null);
 
   useEffect(() => {
-    const fetchPosts = async () => {
+    const fetchData = async () => {
       try {
-        const res = await fetch('/api/posts?status=approved');
-        const data = await res.json();
-        setPosts(data.posts);
+        const [postsRes, scoreRes] = await Promise.all([
+          fetch('/api/posts?status=approved'),
+          fetch('/api/scores')
+        ]);
+
+        const postsData = await postsRes.json();
+        const scoreData = await scoreRes.json();
+
+        setPosts(postsData.posts);
+        setScore(scoreData.score);
       } catch (error) {
-        console.error('Failed to fetch posts', error);
+        console.error('Failed to fetch data', error);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchPosts();
+    fetchData();
   }, []);
 
   const handleArchive = async (e: React.MouseEvent, id: string) => {
@@ -48,11 +56,34 @@ export default function Home() {
 
   return (
     <div className="container">
-      <header style={{ textAlign: 'center', margin: '4rem 0' }}>
-        <h1 style={{ fontSize: '3.5rem', marginBottom: '1rem', letterSpacing: '-0.05em' }}>
-          What's <span style={{ color: 'var(--primary)' }}>Trending</span>
+      {score && (
+        <div className="scoreboard animate-fade-in">
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+            <span style={{ color: '#94a3b8', fontSize: '0.9rem', letterSpacing: '0.05em' }}>{score.matchTitle}</span>
+            <span className="live-badge">LIVE</span>
+          </div>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div style={{ textAlign: 'center', flex: 1 }}>
+              <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>{score.teamA}</h2>
+              <p style={{ fontSize: '2rem', color: 'var(--primary)', fontWeight: 'bold' }}>{score.scoreA}</p>
+            </div>
+            <div style={{ color: '#64748b', fontWeight: 'bold', fontSize: '1.2rem' }}>VS</div>
+            <div style={{ textAlign: 'center', flex: 1 }}>
+              <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>{score.teamB}</h2>
+              <p style={{ fontSize: '2rem', color: 'var(--primary)', fontWeight: 'bold' }}>{score.scoreB}</p>
+            </div>
+          </div>
+          <div style={{ textAlign: 'center', marginTop: '1rem', color: '#eab308', fontWeight: '500' }}>
+            {score.status}
+          </div>
+        </div>
+      )}
+
+      <header style={{ textAlign: 'center', margin: '3rem 0' }}>
+        <h1 style={{ fontSize: '3rem', marginBottom: '0.5rem', letterSpacing: '-0.05em' }}>
+          Latest <span style={{ color: 'var(--primary)' }}>Cricket News</span>
         </h1>
-        <p style={{ color: '#888', fontSize: '1.2rem' }}>Curated viral news from India, instantly.</p>
+        <p style={{ color: '#94a3b8', fontSize: '1.1rem' }}>Match reports, highlights, and trending stories.</p>
       </header>
 
       {loading ? (

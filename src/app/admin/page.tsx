@@ -13,6 +13,9 @@ interface Post {
 export default function AdminPage() {
     const [posts, setPosts] = useState<Post[]>([]);
     const [loading, setLoading] = useState(true);
+    const [score, setScore] = useState({
+        teamA: '', teamB: '', scoreA: '', scoreB: '', status: '', matchTitle: ''
+    });
 
     const fetchPosts = async () => {
         setLoading(true);
@@ -24,6 +27,30 @@ export default function AdminPage() {
             console.error('Failed to fetch posts', error);
         } finally {
             setLoading(false);
+        }
+    };
+
+    const fetchScore = async () => {
+        try {
+            const res = await fetch('/api/scores');
+            const data = await res.json();
+            setScore(data.score);
+        } catch (error) {
+            console.error('Failed to fetch score', error);
+        }
+    };
+
+    const updateScore = async (e: React.FormEvent) => {
+        e.preventDefault();
+        try {
+            await fetch('/api/scores', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(score),
+            });
+            alert('Score updated!');
+        } catch (error) {
+            console.error('Failed to update score', error);
         }
     };
 
@@ -52,14 +79,60 @@ export default function AdminPage() {
 
     useEffect(() => {
         fetchPosts();
+        fetchScore();
     }, []);
 
     return (
         <div className="container">
+            <div className="card" style={{ padding: '2rem', marginBottom: '3rem' }}>
+                <h2 style={{ marginBottom: '1.5rem' }}>Live Score Manager</h2>
+                <form onSubmit={updateScore} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                    <input
+                        placeholder="Match Title (e.g. IND vs AUS)"
+                        value={score.matchTitle}
+                        onChange={e => setScore({ ...score, matchTitle: e.target.value })}
+                        style={{ gridColumn: '1 / -1', padding: '0.5rem' }}
+                    />
+                    <input
+                        placeholder="Team A"
+                        value={score.teamA}
+                        onChange={e => setScore({ ...score, teamA: e.target.value })}
+                        style={{ padding: '0.5rem' }}
+                    />
+                    <input
+                        placeholder="Team B"
+                        value={score.teamB}
+                        onChange={e => setScore({ ...score, teamB: e.target.value })}
+                        style={{ padding: '0.5rem' }}
+                    />
+                    <input
+                        placeholder="Score A"
+                        value={score.scoreA}
+                        onChange={e => setScore({ ...score, scoreA: e.target.value })}
+                        style={{ padding: '0.5rem' }}
+                    />
+                    <input
+                        placeholder="Score B"
+                        value={score.scoreB}
+                        onChange={e => setScore({ ...score, scoreB: e.target.value })}
+                        style={{ padding: '0.5rem' }}
+                    />
+                    <input
+                        placeholder="Status (e.g. Live)"
+                        value={score.status}
+                        onChange={e => setScore({ ...score, status: e.target.value })}
+                        style={{ gridColumn: '1 / -1', padding: '0.5rem' }}
+                    />
+                    <button type="submit" className="btn btn-primary" style={{ gridColumn: '1 / -1' }}>
+                        Update Live Score
+                    </button>
+                </form>
+            </div>
+
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-                <h1>Admin Dashboard</h1>
+                <h1>Pending News</h1>
                 <button onClick={fetchNewTrends} className="btn btn-primary">
-                    Fetch Latest News (RSS)
+                    Fetch Cricket News (RSS)
                 </button>
             </div>
 
